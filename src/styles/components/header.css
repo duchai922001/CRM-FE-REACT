@@ -1,0 +1,26 @@
+.header-container{
+    background-color: var(--primary-color);
+    padding: 12px;
+    box-shadow: 2px 0 2px 0 #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.header-name{
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.header-actions{
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+.info-user {
+    cursor: pointer;
+}
+.info-user p{
+    margin: 0;
+}
