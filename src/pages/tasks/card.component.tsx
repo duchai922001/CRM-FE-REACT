@@ -23,6 +23,7 @@ const DraggableCard = ({ id, text }: { id: string; text: string }) => {
         {text}
       </div>
       <ModalTask
+        id={id}
         title={text}
         isModalOpen={isOpen}
         handleCancel={handleCancel}

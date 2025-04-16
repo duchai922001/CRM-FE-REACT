@@ -1,8 +1,11 @@
 import { Col, Form, Input, Modal, Row, Select } from "antd";
 import { useState } from "react";
 import { MdDeleteForever } from "react-icons/md";
+import { toast } from "react-toastify";
+import { TasksService } from "../../services/tasks.service";
 const { Option } = Select;
 interface Props {
+  id: number;
   title: string;
   isModalOpen: boolean;
   handleOk: () => void;
@@ -13,9 +16,33 @@ const users = [
   { id: 2, name: "Trần Thị B" },
   { id: 3, name: "Lê Văn C" },
 ];
-const ModalTask = ({ title, isModalOpen, handleOk, handleCancel }: Props) => {
+const ModalTask = ({
+  id,
+  title,
+  isModalOpen,
+  handleOk,
+  handleCancel,
+}: Props) => {
   const [newTitle, setNewTitle] = useState(title);
   const onFinish = (values) => {};
+  const handleDeleteTask = () => {
+    Modal.confirm({
+      title: "Xác nhận xóa công việc",
+      content: "Bạn có chắc chắn muốn xóa công việc này không?",
+      okText: "Xóa",
+      okType: "danger",
+      cancelText: "Hủy",
+      onOk: async () => {
+        try {
+          await TasksService.delete(id);
+          toast.success("Xóa thành công");
+          handleCancel();
+        } catch (error: any) {
+          toast.error(error.message ?? "Lỗi hệ thống");
+        }
+      },
+    });
+  };
   return (
     <Modal
       title={
@@ -51,7 +78,7 @@ const ModalTask = ({ title, isModalOpen, handleOk, handleCancel }: Props) => {
         </Col>
         <Col span={6}>
           <h3>Hành động</h3>
-          <button className="btn btn-remove">
+          <button className="btn btn-remove" onClick={handleDeleteTask}>
             <MdDeleteForever />
             <span>Xóa công việc</span>
           </button>
