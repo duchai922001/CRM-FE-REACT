@@ -5,7 +5,10 @@ import { LuSquareMenu } from "react-icons/lu";
 import { GoPlus } from "react-icons/go";
 import { FaRegWindowClose } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { TasksService } from "../../services/tasks.service";
+import { useDispatch } from "react-redux";
+import { addTask } from "../../features/tasks/tasks-slice";
+import { AppDispatch } from "../../store/store";
+import { localStorageUtil } from "../../helpers/localstorage.helper";
 
 type Props = {
   title: string;
@@ -15,6 +18,8 @@ type Props = {
 };
 
 const DropColumn = ({ title, tasks, onDrop, columnKey }: Props) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const user = localStorageUtil.get("user");
   const [showInput, setShowInput] = useState(false);
   const [newTaskText, setNewTaskText] = useState("");
   const [, dropRef] = useDrop({
@@ -25,18 +30,24 @@ const DropColumn = ({ title, tasks, onDrop, columnKey }: Props) => {
   });
   const handleAddTask = async () => {
     if (newTaskText.trim() === "") return;
-    tasks.push({ id: Date.now().toString(), text: newTaskText });
     try {
       const payload = {
         name: newTaskText,
-        assigneeId: 1,
+        assigneeId: user.id,
+        description: "",
+        status:
+          columnKey === "progress"
+            ? "in_progress"
+            : columnKey === "finished"
+            ? "done"
+            : columnKey,
       };
-      await TasksService.create(payload);
+      await dispatch(addTask(payload)).unwrap();
       setNewTaskText("");
       setShowInput(false);
       toast.success("Thêm công việc thành công");
     } catch (error) {
-      toast.error(error.message ?? "Lỗi hệ thống");
+      toast.error(error || "Lỗi hệ thống");
     }
   };
   return (
@@ -47,7 +58,12 @@ const DropColumn = ({ title, tasks, onDrop, columnKey }: Props) => {
       </div>
       <div className="tasks-column">
         {tasks.map((task) => (
-          <DraggableCard key={task.id} id={task.id} text={task.text} />
+          <DraggableCard
+            key={task.id}
+            id={Number(task.id)}
+            text={task.text}
+            columnKey={columnKey}
+          />
         ))}
         {showInput && (
           <div style={{ marginTop: 8 }}>

@@ -3,8 +3,13 @@ import { IoIosLogOut } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { localStorageUtil } from "../../helpers/localstorage.helper";
 import { useEffect, useState } from "react";
+import { HiMiniBellAlert } from "react-icons/hi2";
+import { getSocket } from "../../socket/socket";
+import { toast } from "react-toastify";
 
 const Header = () => {
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation()
   const [activeUrl, setActiveUrl] = useState("/")
@@ -34,6 +39,21 @@ const Header = () => {
       label: "Email",
     },
   ];
+
+  useEffect(() => {
+    const socket = getSocket();
+    if (socket) {
+      socket.on("taskAssigned", (task) => {
+        setNotifications((prev) => [...prev, task]);
+        setUnreadCount((prev) => prev + 1);
+        toast.info(`🔥 Bạn được giao việc mới: ${task.name}`);
+      });
+    }
+
+    return () => {
+      if (socket) socket.off("taskAssigned");
+    };
+  }, []);
   return (
     <>
       <header className="header-container">
@@ -44,6 +64,7 @@ const Header = () => {
             <p>Đức Hải</p>
             <p>Dev A Team</p>
           </div>
+          <HiMiniBellAlert />
           <IoIosLogOut className="action" onClick={handleLogout} />
         </div>
       </header>

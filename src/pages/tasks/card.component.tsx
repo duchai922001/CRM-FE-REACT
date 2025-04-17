@@ -2,7 +2,15 @@ import React, { useState } from "react";
 import { useDrag } from "react-dnd";
 import ModalTask from "./modal-task.component";
 
-const DraggableCard = ({ id, text }: { id: string; text: string }) => {
+const DraggableCard = ({
+  id,
+  text,
+  columnKey,
+}: {
+  id: number;
+  text: string;
+  columnKey: string;
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [{ isDragging }, dragRef] = useDrag({
     type: "CARD",
@@ -14,7 +22,7 @@ const DraggableCard = ({ id, text }: { id: string; text: string }) => {
   const showModal = () => {
     setIsOpen(true);
   };
-  const handleCancel = () => {
+  const handleClose = () => {
     setIsOpen(false);
   };
   return (
@@ -23,11 +31,11 @@ const DraggableCard = ({ id, text }: { id: string; text: string }) => {
         {text}
       </div>
       <ModalTask
+        columnKey={columnKey}
         id={id}
         title={text}
         isModalOpen={isOpen}
-        handleCancel={handleCancel}
-        handleOk={handleCancel}
+        handleClose={handleClose}
       />
     </>
   );

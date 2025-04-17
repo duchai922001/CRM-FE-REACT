@@ -107,11 +107,23 @@
 }
 
 /* modal */
+h3{
+  margin: 0;
+  
+}
 .title-header-modal{
   border: none;
   outline: none;
-  font-size: 32px;
-  width: 100%;
+  font-size: 26px;
+  width: 90%;
+  border: 1px solid white;
+  padding: 4px;
+}
+
+.title-header-modal:focus {
+  border: 1px solid var(--primary-color);
+  background-color: #ccc;
+  border-radius: 6px;
 }
 .btn {
   background-color: #B6C2CF;
