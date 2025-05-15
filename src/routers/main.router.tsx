@@ -5,6 +5,7 @@ import Register from "../pages/register.page";
 import Login from "../pages/login.page";
 import PrivateRoute from "./private.router";
 import { TasksPage } from "../pages/tasks/tasks.page";
+import Users from "../pages/users.page";
 
 const MainRouter = () => {
   return (
@@ -16,6 +17,7 @@ const MainRouter = () => {
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/users" element={<Users />} />
 
           </Route>
         </Route>

@@ -1,8 +1,6 @@
 import { Form, Input, Button, Typography, Card } from "antd";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthService } from "../services/auth.service";
-import { toast } from "react-toastify";
-import { localStorageUtil } from "../helpers/localstorage.helper";
+import { Link } from "react-router-dom";
+import { useLogin } from "../hooks/useAuth";
 
 const { Title } = Typography;
 interface IValues {
@@ -10,17 +8,9 @@ interface IValues {
   password: string;
 }
 const Login = () => {
-  const navigate = useNavigate();
+  const loginMutation = useLogin();
   const onFinish = async (values: IValues) => {
-    try {
-      const response = await AuthService.login(values);
-      localStorageUtil.set("user", response.user);
-      localStorageUtil.set("accessToken", response.access_token);
-      toast.success("Đăng nhập thành công");
-      navigate("/");
-    } catch (error) {
-      toast.error(error?.message ?? "Lỗi hệ thống");
-    }
+    loginMutation.mutate(values)
   };
 
   return (
@@ -47,8 +37,8 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Đăng nhập
+            <Button type="primary" htmlType="submit" block disabled={loginMutation.isPending}>
+            {loginMutation.isPending ? "Đang đăng nhập..." : "Đăng nhập"}
             </Button>
           </Form.Item>
         </Form>

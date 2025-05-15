@@ -1,8 +1,8 @@
 import { Form, Input, Button, Typography, Card } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { IRegister } from "../types/auth.interface";
-import { AuthService } from "../services/auth.service";
+import { useRegister } from "../hooks/useAuth";
 
 const { Title } = Typography;
 interface IValues {
@@ -13,7 +13,7 @@ interface IValues {
   name: string;
 }
 const Register = () => {
-  const navigate = useNavigate();
+  const registerMutation = useRegister();
   const onFinish = async (values: IValues) => {
     if (values.password !== values.confirmPassword) {
       return toast.warning("Mật khẩu không khớp");
@@ -24,13 +24,7 @@ const Register = () => {
       password: values.password,
       phone: values.phone,
     };
-    try {
-      await AuthService.register(payload);
-      toast.success("Đăng ký thành công");
-      navigate("/login");
-    } catch (error: any) {
-      toast.error(error.message);
-    }
+    registerMutation.mutate(payload);
   };
 
   return (
@@ -80,8 +74,13 @@ const Register = () => {
             <Input placeholder="0123456789" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Đăng ký
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              disabled={registerMutation.isPending}
+            >
+              {registerMutation.isPending ? "Đang đăng ký..." : "Đăng ký"}
             </Button>
           </Form.Item>
         </Form>

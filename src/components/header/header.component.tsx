@@ -31,8 +31,8 @@ const Header = () => {
       label: "Công việc",
     },
     {
-      key: "/reports",
-      label: "Báo cáo",
+      key: "/users",
+      label: "Người dùng",
     },
     {
       key: "/email",
